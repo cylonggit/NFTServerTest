@@ -1,0 +1,56 @@
+#server:
+#  port: ${SERVER_PORT:9006}
+
+spring:
+  application:
+    name: NFTServer-Test
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://10.16.101.62:3306/market_nft?characterEncoding=UTF8
+    username: chen
+    password: chen
+  jpa:
+    database: MySQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+  sleuth:
+    sampler:
+      rate: 1
+#  zipkin:
+#    base-url: http://10.16.101.62:9411
+
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://10.16.101.62:9000}   #通过搭建的nginx服务器代理去访问minio
+  accesskey: ${MINIO_ASSESSKEY:admin}
+  secretkey: ${MINIO_SECRETKEY:admin123}
+  bucket: ${MINIO_BUCKET:test}
+
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://127.0.0.1:6868/eureka/   #本地调试使用
+#  instance:
+#    prefer-ip-address: true
+
+#eth:
+#  gethurl: http://10.16.101.92:8845
+#  constractAddr: "0x990120cCa2595e126A0E131a7B83691533E1934A"
+#  constractClass: Mynft-Mynft
+#  privateKey: 1ffd2f42a80bd0bcc6653c6e77dc314195fe41bfefa26962764d39987cd133aa
+#  #以keystore形式给出的秘钥（目前没用）
+#  keystorePath: keystores/UTC--2021-07-17T05-23-45.002394458Z--3b9ed344d2885d33dd8c3d2411411df94ab8e824
+#  #目前试的所有keystore类型秘钥密码都为chen
+#  keystorePwd: chen
+#  bucket: test
+
+fisco:
+  defaultAccoutPath: account/0x5d0a90ad4af83cacb78c9ba0596bd2fd2b94d68d.pem
+  defaultGroup: 1
+  configFile: /fisco-config.yml
+  bucket: test
+
+waterServer:
+  url: http://10.16.101.62:8087/embed
+
