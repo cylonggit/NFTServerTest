@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes= TestApplication.class) // 指定spring-boot的启动类
-
 public class TestExample {
     public static final Logger logger = LoggerFactory.getLogger(TestExample.class.getName());
 //    @Autowired

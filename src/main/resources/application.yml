@@ -6,7 +6,7 @@ spring:
     name: NFTServer-Test
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://10.16.101.62:3306/market_nft?characterEncoding=UTF8
+    url: jdbc:mysql://10.16.101.51:3306/market_nft?characterEncoding=UTF8
     username: chen
     password: chen
   jpa:
@@ -19,10 +19,10 @@ spring:
     sampler:
       rate: 1
 #  zipkin:
-#    base-url: http://10.16.101.62:9411
+#    base-url: http://10.16.101.51:9411
 
 minio:
-  endpoint: ${MINIO_ENDPOINT:http://10.16.101.62:9000}   #通过搭建的nginx服务器代理去访问minio
+  endpoint: ${MINIO_ENDPOINT:http://10.16.101.51:9000}   #通过搭建的nginx服务器代理去访问minio
   accesskey: ${MINIO_ASSESSKEY:admin}
   secretkey: ${MINIO_SECRETKEY:admin123}
   bucket: ${MINIO_BUCKET:test}
@@ -52,5 +52,5 @@ fisco:
   bucket: test
 
 waterServer:
-  url: http://10.16.101.62:8087/embed
+  url: http://10.16.101.51:8087/embed
 
