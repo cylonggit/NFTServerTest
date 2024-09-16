@@ -1,6 +1,6 @@
+# Default ignored files
 *.class
 ./*/target/
-# Default ignored files
 #忽略所有.svn目录
 .svn/
 #忽略所有target目录
