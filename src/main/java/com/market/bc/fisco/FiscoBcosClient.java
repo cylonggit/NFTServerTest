@@ -327,7 +327,7 @@ public class FiscoBcosClient {
         String pemAccountFilePath=this.getClass().getClassLoader().getResource(fiscoProp.getDefaultAccoutPath()).getPath();
         System.out.println("++++++++++++++++++++path:"+pemAccountFilePath);
         cryptoSuite.loadAccount("pem", pemAccountFilePath, null);
-        cryptoKeyPair=client.getCryptoSuite().getCryptoKeyPair();
+        CryptoKeyPair cryptoKeyPair=client.getCryptoSuite().getCryptoKeyPair();
 
         String contractAddress = getContractAddress();
         contract = Mynft.load(contractAddress, client, cryptoKeyPair);
