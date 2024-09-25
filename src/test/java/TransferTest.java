@@ -1,6 +1,7 @@
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,7 @@ public class TransferTest {
     String userID1, userID2;
 
     @Before
-    public void initUser1() {
+    public void initUser1() { // 初始化原所有者用户
         Map<String, String> params = new HashMap<>();
         params.put("username", "mytest");
         params.put("password", "123456");
@@ -33,7 +34,7 @@ public class TransferTest {
     }
 
     @Before
-    public void initUser2() {
+    public void initUser2() { // 初始化意向转移用户
         Map<String, String> params = new HashMap<>();
         params.put("username", "othertest");
         params.put("password", "123456");
@@ -42,5 +43,19 @@ public class TransferTest {
         System.out.println(userID2);
     }
 
+    @Before
+    public void initNFT() { // 找到原所有者用户的一件NFT
+        Map<String, String> params = new HashMap<>();
+        params.put("page", "1");
+        params.put("size", "10");
+        params.put("userID", userID1);
+        ResponseEntity<Map> response = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/nft/nft/ownNFT", Map.class, params);
+        System.out.println(response.getBody());
+    }
+
+    @Test
+    public void test() {
+
+    }
 
 }
