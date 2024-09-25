@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
@@ -89,6 +89,18 @@ public class CreateTest {
         List<NFTTransfer> list = transferDao.findNFTTransfersByNftID(nftID);
         System.out.println(list.get(0).getTransferHash());
         assertNotNull(list.get(0).getTransferHash());
+        // 验证铸造合约调用成功，并返回正确的哈希值。
+
+        Map<String, String> params1 = new HashMap<>();
+        params1.put("tokenId", nftID);
+        ResponseEntity<Map> response1 = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/bc/bc/getNFTInfo", params1, Map.class);
+        System.out.println(response1.getBody());
+        String tokenId = response1.getBody().get("tokenId").toString();
+        String tokenInfo = response1.getBody().get("files").toString();
+        assertEquals(nftID, tokenId);
+        assertTrue(tokenInfo.contains(url));
+
+
     }
 
 }
