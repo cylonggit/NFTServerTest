@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
-public class CreateTest {
+public class NFTCreateTest {
     // 用于测试铸造NFT
 
     RestTemplate restTemplate = new RestTemplate();
