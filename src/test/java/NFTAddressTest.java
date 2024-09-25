@@ -16,8 +16,8 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
-public class AddressTest {
-    public static final Logger logger = LoggerFactory.getLogger(AddressTest.class.getName());
+public class NFTAddressTest {
+    public static final Logger logger = LoggerFactory.getLogger(NFTAddressTest.class.getName());
 
     @Autowired
     FiscoBcosClient myFiscoClient;
