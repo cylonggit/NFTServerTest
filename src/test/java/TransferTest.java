@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
 public class TransferTest {
@@ -75,10 +78,30 @@ public class TransferTest {
         headers.add("userID", userID2);
         HttpEntity<List<String>> requestEntity = new HttpEntity<>(nftIDs, headers);
         restTemplate.exchange(myConfig.getBackendServerUrl() + "/nft/nft/changeOwn", HttpMethod.PUT, requestEntity, Map.class);
+        // 完成文化产品的转移
+
+        // 验证数据库层面的转移
+        Map<String, String> params2 = new HashMap<>();
+        params2.put("userID", userID1);
+        params2.put("nftID", nftID);
+        ResponseEntity<Map> response2 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/nft/nft/checkOwn?userID={userID}&nftID={nftID}", Map.class, params2);
+        System.out.println(response2.getBody());
+        assertFalse((Boolean) response2.getBody().get("data"));
+
+        params2 = new HashMap<>();
+        params2.put("userID", userID2);
+        params2.put("nftID", nftID);
+        response2 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/nft/nft/checkOwn?userID={userID}&nftID={nftID}", Map.class, params2);
+        System.out.println(response2.getBody());
+        assertTrue((Boolean) response2.getBody().get("data"));
+
+        // 验证联盟链层面的转移
+
     }
 
     @After
     public void cleanUp() {
+        // 把文化产品再转移回去
         Map<String, String> params = new HashMap<>();
         params.put("tokenId", nftID);
         params.put("address", userID2);
