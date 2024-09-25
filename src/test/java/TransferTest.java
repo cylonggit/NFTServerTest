@@ -31,6 +31,14 @@ public class TransferTest {
         ResponseEntity<Map> response = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/user/user/login", params, Map.class);
         userID1 = ((Map) response.getBody().get("data")).get("userID").toString();
         System.out.println(userID1);
+
+        // 找到原所有者用户的一件NFT
+        Map<String, String> params1 = new HashMap<>();
+        params1.put("page", "1");
+        params1.put("size", "10");
+        params1.put("userID", userID1);
+        ResponseEntity<Map> response1 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/nft/nft/ownNFT?page={page}&size={size}&userID={userID}", Map.class, params1);
+        System.out.println(response1.getBody());
     }
 
     @Before
@@ -41,16 +49,6 @@ public class TransferTest {
         ResponseEntity<Map> response = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/user/user/login", params, Map.class);
         userID2 = ((Map) response.getBody().get("data")).get("userID").toString();
         System.out.println(userID2);
-    }
-
-    @Before
-    public void initNFT() { // 找到原所有者用户的一件NFT
-        Map<String, String> params = new HashMap<>();
-        params.put("page", "1");
-        params.put("size", "10");
-        params.put("userID", userID1);
-        ResponseEntity<Map> response = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/nft/nft/ownNFT", Map.class, params);
-        System.out.println(response.getBody());
     }
 
     @Test
