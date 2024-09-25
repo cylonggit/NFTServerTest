@@ -99,8 +99,16 @@ public class CreateTest {
         String tokenInfo = response1.getBody().get("files").toString();
         assertEquals(nftID, tokenId);
         assertTrue(tokenInfo.contains(url));
+        // 验证链上存在对应的非同质化通证
+        // 验证链下存储模块存在对应的文化产品文件
 
-
+        Map<String, String> params2 = new HashMap<>();
+        params2.put("userID", userID);
+        params2.put("nftID", nftID);
+        ResponseEntity<Map> response2 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/nft/nft/checkOwn", Map.class, params2);
+        System.out.println(response2.getBody());
+        assertTrue((Boolean) response2.getBody().get("flag"));
+        // 验证数据库所有权
     }
 
 }
