@@ -19,6 +19,14 @@
             <groupId>org.web3j</groupId>
             <artifactId>core</artifactId>
             <version>3.2.0</version>
+            <exclusions>
+            <exclusion>
+
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15on</artifactId>
+
+            </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.fisco-bcos.java-sdk/fisco-bcos-java-sdk -->
@@ -80,11 +88,16 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.mwiede</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.2.20</version>
+        </dependency>
 
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk18on</artifactId>
-            <version>1.78.1</version>
+            <version>1.77</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

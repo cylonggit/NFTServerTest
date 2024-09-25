@@ -1,3 +1,7 @@
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
 import org.junit.After;
@@ -52,11 +56,13 @@ public class FileRedundancyTest {
     @Test
     public void testFileRedundancy() {
         assertTrue(isUrlReachable(url));
+        executeRemoteCommand(myConfig.getSshHost(), myConfig.getSshUser(), myConfig.getSshPassword(), "stop");
+        assertTrue(isUrlReachable(url));
     }
 
     @After
     public void cleanup() {
-
+        executeRemoteCommand(myConfig.getSshHost(), myConfig.getSshUser(), myConfig.getSshPassword(), "start");
     }
 
     public static boolean isUrlReachable(String urlString) {
@@ -67,6 +73,28 @@ public class FileRedundancyTest {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    public static void executeRemoteCommand(String host, String user, String password, String command) {
+        try {
+            JSch jsch = new JSch();
+            Session session = jsch.getSession(user, host, 22);
+            session.setPassword(password);
+
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.connect();
+
+            // Execute the command
+            String commandToExecute = "docker " + command + " nftserver-minio1-1";
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand(commandToExecute);
+            channel.connect();
+
+            channel.disconnect();
+            session.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
