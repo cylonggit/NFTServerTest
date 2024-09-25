@@ -1,6 +1,8 @@
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
 import com.market.bc.fisco.FiscoBcosClient;
+import com.market.bc.pojo.User;
+import entity.Result;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +30,7 @@ public class NFTTransferTest {
 
     RestTemplate restTemplate = new RestTemplate();
 
-    String userID1, userID2, nftID;
+    String userID1, userID2, nftID, userAddress1, userAddress2;
 
     @Before
     public void initUser1() throws ContractException { // 初始化原所有者用户
@@ -38,6 +40,12 @@ public class NFTTransferTest {
         ResponseEntity<Map> response = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/user/user/login", params, Map.class);
         userID1 = ((Map) response.getBody().get("data")).get("userID").toString();
         System.out.println(userID1);
+
+        params = new HashMap<>();
+        params.put("userID", userID1);
+        ResponseEntity<Result> response0 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/user/user?userID={userID}", Result.class, params);
+        userAddress1 = new User((Map) response0.getBody().getData()).getAccountAddress();
+        System.out.println(userAddress1);
 
         // 找到原所有者用户的一件NFT
         Map<String, String> params1 = new HashMap<>();
@@ -58,6 +66,12 @@ public class NFTTransferTest {
         ResponseEntity<Map> response = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/user/user/login", params, Map.class);
         userID2 = ((Map) response.getBody().get("data")).get("userID").toString();
         System.out.println(userID2);
+
+        params = new HashMap<>();
+        params.put("userID", userID2);
+        ResponseEntity<Result> response0 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/user/user?userID={userID}", Result.class, params);
+        userAddress2 = new User((Map) response0.getBody().getData()).getAccountAddress();
+        System.out.println(userAddress2);
     }
 
 

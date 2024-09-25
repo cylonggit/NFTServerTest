@@ -201,5 +201,6 @@ public class User implements Serializable {
         this.username = (String) map.get("username");
         this.hexPrivateKey = (String) map.get("hexPrivateKey");
         this.nftRSAPublicKey = (String) map.get("nftRSAPublicKey");
+        this.accountAddress = (String) map.get("accountAddress");
     }
 }
