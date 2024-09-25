@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
 public class NFTQueryTest {
@@ -59,5 +61,10 @@ public class NFTQueryTest {
         String files = response1.getBody().getFiles();
         String auth = response1.getBody().getAuth();
         String pubkey = response1.getBody().getPubkey();
+        assertNotNull(owner);
+        assertNotNull(files);
+        assertNotNull(auth);
+        assertNotNull(pubkey);
+        // 验证返回的非同质化通证信息包含所有预期字段
     }
 }
