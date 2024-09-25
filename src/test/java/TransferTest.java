@@ -1,14 +1,19 @@
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +68,28 @@ public class TransferTest {
         params.put("address", userID1);
         restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/bc/bc/approve", params, Map.class);
 
+        List<String> nftIDs = new ArrayList<>();
+        nftIDs.add(nftID);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("userID", userID2);
+        HttpEntity<List<String>> requestEntity = new HttpEntity<>(nftIDs, headers);
+        restTemplate.exchange(myConfig.getBackendServerUrl() + "/nft/nft/changeOwn", HttpMethod.PUT, requestEntity, Map.class);
     }
 
+    @After
+    public void cleanUp() {
+        Map<String, String> params = new HashMap<>();
+        params.put("tokenId", nftID);
+        params.put("address", userID2);
+        restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/bc/bc/approve", params, Map.class);
+
+        List<String> nftIDs = new ArrayList<>();
+        nftIDs.add(nftID);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("userID", userID1);
+        HttpEntity<List<String>> requestEntity = new HttpEntity<>(nftIDs, headers);
+        restTemplate.exchange(myConfig.getBackendServerUrl() + "/nft/nft/changeOwn", HttpMethod.PUT, requestEntity, Map.class);
+    }
 }
