@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import util.IdWorker;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -27,9 +28,14 @@ public class CreateTest {
     // 用于测试铸造NFT
 
     RestTemplate restTemplate = new RestTemplate();
+    String userID;
+    String url;
 
     @Autowired
     MyConfig myConfig;
+
+    @Autowired
+    IdWorker idWorker;
 
     @Before
     public void init() throws URISyntaxException {
@@ -38,7 +44,7 @@ public class CreateTest {
         params.put("username", "mytest");
         params.put("password", "123456");
         ResponseEntity<Map> response = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/user/user/login", params, Map.class);
-        String userID = ((Map) response.getBody().get("data")).get("userID").toString();
+        userID = ((Map) response.getBody().get("data")).get("userID").toString();
         System.out.println(userID);
         // 获取userID
 
@@ -49,7 +55,7 @@ public class CreateTest {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(bodyMap, headers);
         ResponseEntity<Map> response1 = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/file/file/upload", requestEntity, Map.class);
-        String url = response1.getBody().get("url").toString();
+        url = response1.getBody().get("url").toString();
         System.out.println(url);
         // 上传图片
 
@@ -58,7 +64,19 @@ public class CreateTest {
 
     @Test
     public void test() {
-
+        // 登记上链
+        String nftID = idWorker.nextId() + "";
+        System.out.println(nftID);
+        Map<String, String> params = new HashMap<>();
+        params.put("category", "image");
+        params.put("title", "my test title");
+        params.put("uri", url);
+        params.put("judgeID", "my test judgeID");
+        params.put("nftID", nftID);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("userID", userID);
+        HttpEntity<Map> requestEntity = new HttpEntity<>(params, headers);
+        ResponseEntity<Map> response = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/nft/nft/create", requestEntity, Map.class);
     }
 
 }
