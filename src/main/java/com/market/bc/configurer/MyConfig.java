@@ -1,5 +1,6 @@
 package com.market.bc.configurer;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,4 +20,17 @@ public class MyConfig {
     public String getBackendServerUrl() {
         return backendServer;
     }
+
+    @Getter
+    @Value("${ssh.host}")
+    private String sshHost;
+
+    @Getter
+    @Value("${ssh.user}")
+    private String sshUser;
+
+    @Getter
+    @Value("${ssh.password}")
+    private String sshPassword;
+
 }

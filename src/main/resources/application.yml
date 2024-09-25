@@ -51,6 +51,11 @@ fisco:
   configFile: /fisco-config.yml
   bucket: test
 
+ssh:
+  host: 10.16.101.75
+  user: root
+  password: "&<>udfa67*9d"
+
 waterServer:
   url: http://10.16.101.62:8087/embed
 
