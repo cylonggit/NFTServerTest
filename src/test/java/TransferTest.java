@@ -44,10 +44,10 @@ public class TransferTest {
 
     RestTemplate restTemplate = new RestTemplate();
 
-    String userID1, userID2, nftID, watermark;
+    String userID1, userID2, nftID, watermark, pubKey;
 
     @Before
-    public void initUser1() { // 初始化原所有者用户
+    public void initUser1() throws ContractException { // 初始化原所有者用户
         Map<String, String> params = new HashMap<>();
         params.put("username", "mytest");
         params.put("password", "123456");
@@ -66,6 +66,7 @@ public class TransferTest {
         System.out.println(nftID);
         watermark = nftDao.findNFTByNftID(nftID).getNft_watermark();
         System.out.println(watermark);
+        pubKey = myFiscoClient.getPublicKey(new BigInteger(nftID));
     }
 
     @Before
@@ -125,6 +126,9 @@ public class TransferTest {
         assertNotEquals(nowAddress, userAddress1);
         assertEquals(nowAddress, userAddress2);
 
+        // 验证链下数据层面的转移
+        String new_pubKey = myFiscoClient.getPublicKey(new BigInteger(nftID));
+        assertNotEquals(new_pubKey, pubKey);
     }
 
     @After
