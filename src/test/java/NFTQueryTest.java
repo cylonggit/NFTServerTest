@@ -1,6 +1,7 @@
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
 import com.market.bc.fisco.FiscoBcosClient;
+import com.market.bc.pojo.NFTInfo;
 import entity.Result;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +53,11 @@ public class NFTQueryTest {
     public void test() {
         Map<String, String> params1 = new HashMap<>();
         params1.put("tokenId", nftID);
-        ResponseEntity<Map> response1 = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/bc/bc/getNFTInfo", params1, Map.class);
+        ResponseEntity<NFTInfo> response1 = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/bc/bc/getNFTInfo", params1, NFTInfo.class);
         System.out.println(response1.getBody());
+        String owner = response1.getBody().getOwner();
+        String files = response1.getBody().getFiles();
+        String auth = response1.getBody().getAuth();
+        String pubkey = response1.getBody().getPubkey();
     }
 }
