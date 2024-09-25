@@ -57,6 +57,12 @@ public class TransferTest {
     @Test
     public void test() {
 
+        // 授权系统进行文化产品所有权转移
+        Map<String, String> params = new HashMap<>();
+        params.put("tokenId", nftID);
+        params.put("address", userID1);
+        restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/bc/bc/approve", params, Map.class);
+
     }
 
 }
