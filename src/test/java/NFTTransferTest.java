@@ -3,6 +3,7 @@ import com.market.bc.configurer.MyConfig;
 import com.market.bc.fisco.FiscoBcosClient;
 import com.market.bc.pojo.User;
 import entity.Result;
+import org.fisco.bcos.sdk.model.TransactionReceipt;
 import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +31,7 @@ public class NFTTransferTest {
 
     RestTemplate restTemplate = new RestTemplate();
 
-    String userID1, userID2, nftID, userAddress1, userAddress2;
+    String userID1, userID2, nftID, userAddress1, userAddress2, hexPrivateKey1, hexPrivateKey2, publicKey1, publicKey2;
 
     @Before
     public void initUser1() throws ContractException { // 初始化原所有者用户
@@ -45,6 +46,8 @@ public class NFTTransferTest {
         params.put("userID", userID1);
         ResponseEntity<Result> response0 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/user/user?userID={userID}", Result.class, params);
         userAddress1 = new User((Map) response0.getBody().getData()).getAccountAddress();
+        hexPrivateKey1 = new User((Map) response0.getBody().getData()).getHexPrivateKey();
+        publicKey1 = new User((Map) response0.getBody().getData()).getNftRSAPublicKey();
         System.out.println(userAddress1);
 
         // 找到原所有者用户的一件NFT
@@ -71,17 +74,29 @@ public class NFTTransferTest {
         params.put("userID", userID2);
         ResponseEntity<Result> response0 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/user/user?userID={userID}", Result.class, params);
         userAddress2 = new User((Map) response0.getBody().getData()).getAccountAddress();
+        hexPrivateKey2 = new User((Map) response0.getBody().getData()).getHexPrivateKey();
+        publicKey2 = new User((Map) response0.getBody().getData()).getNftRSAPublicKey();
         System.out.println(userAddress2);
     }
 
 
     @Test
-    public void test() {
+    public void test() throws ContractException {
+        // 联盟链授权
+        myFiscoClient.switchAccount(hexPrivateKey1);
+        myFiscoClient.approvalForOnce(new BigInteger(nftID), myFiscoClient.getPlatformAddress());
+        // 联盟链转移
+        myFiscoClient.switchDefaultAccount();
+        TransactionReceipt re = myFiscoClient.safeTransferFrom(userAddress1, userAddress2, new BigInteger(nftID), publicKey2);
 
     }
 
     @After
-    public void cleanup() {
-
+    public void cleanup() throws ContractException {
+        // 还原
+        myFiscoClient.switchAccount(hexPrivateKey2);
+        myFiscoClient.approvalForOnce(new BigInteger(nftID), myFiscoClient.getPlatformAddress());
+        myFiscoClient.switchDefaultAccount();
+        myFiscoClient.safeTransferFrom(userAddress2, userAddress1, new BigInteger(nftID), publicKey1);
     }
 }
