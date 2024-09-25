@@ -1,5 +1,7 @@
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
+import com.market.bc.dao.NFTTransferDao;
+import com.market.bc.pojo.NFTTransfer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +22,10 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
@@ -36,6 +41,9 @@ public class CreateTest {
 
     @Autowired
     IdWorker idWorker;
+
+    @Autowired
+    NFTTransferDao transferDao;
 
     @Before
     public void init() throws URISyntaxException {
@@ -77,6 +85,10 @@ public class CreateTest {
         headers.add("userID", userID);
         HttpEntity<Map> requestEntity = new HttpEntity<>(params, headers);
         ResponseEntity<Map> response = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/nft/nft/create", requestEntity, Map.class);
+
+        List<NFTTransfer> list = transferDao.findNFTTransfersByNftID(nftID);
+        System.out.println(list.get(0).getTransferHash());
+        assertNotNull(list.get(0).getTransferHash());
     }
 
 }
