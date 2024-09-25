@@ -1,6 +1,10 @@
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
 import com.market.bc.dao.NFTDao;
+import com.market.bc.dao.NFTTransferDao;
+import com.market.bc.fisco.FiscoBcosClient;
+import com.market.bc.pojo.NFTTransfer;
+import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +35,12 @@ public class TransferTest {
 
     @Autowired
     NFTDao nftDao;
+
+    @Autowired
+    NFTTransferDao transferDao;
+
+    @Autowired
+    FiscoBcosClient myFiscoClient;
 
     RestTemplate restTemplate = new RestTemplate();
 
@@ -68,7 +79,7 @@ public class TransferTest {
     }
 
     @Test
-    public void test() {
+    public void test() throws ContractException {
 
         // 授权系统进行文化产品所有权转移
         Map<String, String> params = new HashMap<>();
@@ -106,6 +117,13 @@ public class TransferTest {
         assertNotEquals(new_watermark, watermark);
 
         // 验证联盟链层面的转移
+        List<NFTTransfer> list = transferDao.findNFTTransfersByNftID(nftID);
+        NFTTransfer transfer = list.get(list.size() - 1);
+        String userAddress1 = transfer.getTransferFrom();
+        String userAddress2 = transfer.getTransferTo();
+        String nowAddress = myFiscoClient.getContract().ownerOf(new BigInteger(nftID));
+        assertNotEquals(nowAddress, userAddress1);
+        assertEquals(nowAddress, userAddress2);
 
     }
 
