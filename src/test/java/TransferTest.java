@@ -1,5 +1,6 @@
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
+import com.market.bc.dao.NFTDao;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,8 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
@@ -28,9 +28,12 @@ public class TransferTest {
     @Autowired
     MyConfig myConfig;
 
+    @Autowired
+    NFTDao nftDao;
+
     RestTemplate restTemplate = new RestTemplate();
 
-    String userID1, userID2, nftID;
+    String userID1, userID2, nftID, watermark;
 
     @Before
     public void initUser1() { // 初始化原所有者用户
@@ -50,6 +53,8 @@ public class TransferTest {
         System.out.println(response1.getBody());
         nftID = ((Map) ((List) ((Map) response1.getBody().get("data")).get("rows")).get(0)).get("nftID").toString();
         System.out.println(nftID);
+        watermark = nftDao.findNFTByNftID(nftID).getNft_watermark();
+        System.out.println(watermark);
     }
 
     @Before
@@ -94,6 +99,11 @@ public class TransferTest {
         response2 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/nft/nft/checkOwn?userID={userID}&nftID={nftID}", Map.class, params2);
         System.out.println(response2.getBody());
         assertTrue((Boolean) response2.getBody().get("data"));
+
+        // 验证水印层面的转移
+        String new_watermark = nftDao.findNFTByNftID(nftID).getNft_watermark();
+        System.out.println(new_watermark);
+        assertNotEquals(new_watermark, watermark);
 
         // 验证联盟链层面的转移
 
