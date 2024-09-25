@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
 public class NFTTransferTest {
@@ -89,6 +92,13 @@ public class NFTTransferTest {
         myFiscoClient.switchDefaultAccount();
         TransactionReceipt re = myFiscoClient.safeTransferFrom(userAddress1, userAddress2, new BigInteger(nftID), publicKey2);
 
+        assertNotNull(re.getTransactionHash()); // 验证哈希值正确
+        String publicKey = myFiscoClient.getPublicKey(new BigInteger(nftID));
+        String address = myFiscoClient.getContract().ownerOf(new BigInteger(nftID));
+
+        assertEquals(address, userAddress2);
+        assertEquals(publicKey, publicKey2);
+        // 验证链上所有权和公钥正确
     }
 
     @After
