@@ -105,9 +105,9 @@ public class CreateTest {
         Map<String, String> params2 = new HashMap<>();
         params2.put("userID", userID);
         params2.put("nftID", nftID);
-        ResponseEntity<Map> response2 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/nft/nft/checkOwn", Map.class, params2);
+        ResponseEntity<Map> response2 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/nft/nft/checkOwn?userID={userID}&nftID={nftID}", Map.class, params2);
         System.out.println(response2.getBody());
-        assertTrue((Boolean) response2.getBody().get("flag"));
+        assertTrue((Boolean) response2.getBody().get("data"));
         // 验证数据库中所有权信息
     }
 
