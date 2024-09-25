@@ -108,7 +108,7 @@ public class CreateTest {
         ResponseEntity<Map> response2 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/nft/nft/checkOwn", Map.class, params2);
         System.out.println(response2.getBody());
         assertTrue((Boolean) response2.getBody().get("flag"));
-        // 验证数据库所有权
+        // 验证数据库中所有权信息
     }
 
 }
