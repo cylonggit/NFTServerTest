@@ -54,6 +54,9 @@ fisco:
 waterServer:
   url: http://10.16.101.62:8087/embed
 
+backendServer:
+  url: http://10.16.101.75:9015
+
 jwt:
   config:
     key: nftMarket

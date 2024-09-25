@@ -13,4 +13,10 @@ public class MyConfig {
         return waterServer;
     }
 
+    @Value("${backendServer.url}")
+    private String backendServer;
+
+    public String getBackendServerUrl() {
+        return backendServer;
+    }
 }
