@@ -1,3 +1,4 @@
+import com.google.gson.JsonObject;
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
 import org.junit.Before;
@@ -56,6 +57,13 @@ public class FileDownloadTest {
 
     @Test
     public void fileDownload() {
+        long timestamp = System.currentTimeMillis();
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("timestamp", timestamp);
+        jsonObject.addProperty("tokenId", nftID);
+        jsonObject.addProperty("fileId", filename);
+        System.out.println(jsonObject);
+        String jsonString = jsonObject.toString();
 
     }
 }
