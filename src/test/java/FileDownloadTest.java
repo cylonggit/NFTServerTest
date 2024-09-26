@@ -7,10 +7,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.security.PrivateKey;
@@ -19,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
@@ -71,7 +78,37 @@ public class FileDownloadTest {
 
         PrivateKey privateKey = RSAUtil.getPrivateKeyFromPem(Paths.get(getClass().getClassLoader().getResource("mytest-privateKey.pem").toURI()).toString());
 
-        String data = RSAUtil.sign(jsonString.getBytes(), privateKey);
-        System.out.println(data);
+        String cipher = RSAUtil.sign(jsonString.getBytes(), privateKey);
+        System.out.println(cipher);
+
+        Map<String, String> params = new HashMap<>();
+        params.put("cipher", cipher);
+        ResponseEntity<ByteArrayResource> response = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/bc/nft/file/down/" + nftID + "/" + filename + "/" + timestamp, params, ByteArrayResource.class);
+
+        assertEquals(200, response.getStatusCodeValue());
+
+        boolean flag = false;
+        // 检查响应状态码
+        if (response.getStatusCode().is2xxSuccessful()) {
+            ByteArrayResource resource = response.getBody();
+            if (resource != null) {
+                // 指定文件保存路径
+                String savePath = Paths.get(getClass().getClassLoader().getResource("images/3.jpg").toURI()).toString();
+
+                // 保存文件
+                try (OutputStream outputStream = new FileOutputStream(savePath)) {
+                    byte[] data = resource.getByteArray();
+                    outputStream.write(data);
+                    System.out.println("File saved successfully at: " + savePath);
+                    flag = true;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            System.err.println("Failed to retrieve the file from the server");
+        }
+
+        assertTrue(flag);
     }
 }
