@@ -245,7 +245,7 @@ public class RSAUtil {
             str += s + "\r";
             s = br.readLine();
         }
-        Decoder base64decoder = Base64.getDecoder();
+        Decoder base64decoder = Base64.getMimeDecoder();
         byte[] b = base64decoder.decode(str);
 
         // 生成私匙

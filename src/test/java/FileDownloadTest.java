@@ -1,6 +1,7 @@
 import com.google.gson.JsonObject;
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
+import com.market.bc.util.RSAUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
+import java.security.PrivateKey;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +60,7 @@ public class FileDownloadTest {
     }
 
     @Test
-    public void fileDownload() {
+    public void fileDownload() throws Exception {
         long timestamp = System.currentTimeMillis();
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("timestamp", timestamp);
@@ -65,5 +69,6 @@ public class FileDownloadTest {
         System.out.println(jsonObject);
         String jsonString = jsonObject.toString();
 
+        PrivateKey privateKey = RSAUtil.getPrivateKeyFromPem(Paths.get(getClass().getClassLoader().getResource("mytest-privateKey.pem").toURI()).toString());
     }
 }
