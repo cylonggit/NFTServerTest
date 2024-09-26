@@ -70,5 +70,8 @@ public class FileDownloadTest {
         String jsonString = jsonObject.toString();
 
         PrivateKey privateKey = RSAUtil.getPrivateKeyFromPem(Paths.get(getClass().getClassLoader().getResource("mytest-privateKey.pem").toURI()).toString());
+
+        String data = RSAUtil.sign(jsonString.getBytes(), privateKey);
+        System.out.println(data);
     }
 }

@@ -153,7 +153,7 @@ public class RSAUtil {
      * @throws Exception
      */
     public static String sign(byte[] data, PrivateKey privateKey) throws Exception {
-        Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
+        Signature signature = Signature.getInstance("SHA1withRSA");
         signature.initSign(privateKey);
         signature.update(data);
         return encryptBASE64(signature.sign());
