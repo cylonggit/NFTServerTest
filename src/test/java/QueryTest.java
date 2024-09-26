@@ -1,6 +1,7 @@
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,6 +40,14 @@ public class QueryTest {
         System.out.println(response1.getBody());
         nftID = ((Map) ((List) ((Map) response1.getBody().get("data")).get("rows")).get(0)).get("nftID").toString();
         System.out.println(nftID);
+    }
+
+    @Test
+    public void test() {
+        Map<String, String> params = new HashMap<>();
+        params.put("nftID", nftID);
+        ResponseEntity<Map> response = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/nft/nft?nftID={nftID}", Map.class, params);
+        System.out.println(response.getBody());
     }
 
 }
