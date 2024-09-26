@@ -1,5 +1,7 @@
 import com.market.bc.TestApplication;
 import com.market.bc.fisco.FiscoBcosClient;
+import com.market.bc.util.RSAUtil;
+import com.market.bc.util.RsaKeyUtils;
 import org.fisco.bcos.sdk.crypto.CryptoSuite;
 import org.fisco.bcos.sdk.crypto.keypair.CryptoKeyPair;
 import org.fisco.bcos.sdk.model.CryptoType;
@@ -32,6 +34,9 @@ public class BlockchanClientTest {
         // 获取生成的区块链账户地址
         String address = cryptoKeyPair.getAddress();
         String hexPrivateKey = cryptoKeyPair.getHexPrivateKey();
+        String hexPublicKey =  cryptoKeyPair.getHexPublicKey();
+        String filepath = ClassLoader.getSystemResource("").getPath();
+        RsaKeyUtils.witeKeyStringToFile(hexPrivateKey,hexPublicKey,filepath);
 
         // 切换账户
         myFiscoClient.switchAccount(hexPrivateKey);

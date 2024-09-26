@@ -131,6 +131,26 @@ public class RsaKeyUtils {
         }
         return results;
     }
+    public  static  void witeKeyStringToFile( String privateKeyString,String publicKeyString,String filePath){
+        try {
+            // 将密钥对写入到文件
+            FileWriter pubfw = new FileWriter(filePath + "/publicKey.keystore");
+            FileWriter prifw = new FileWriter(filePath + "/privateKey.keystore");
+            BufferedWriter pubbw = new BufferedWriter(pubfw);
+            BufferedWriter pribw = new BufferedWriter(prifw);
+            pubbw.write(publicKeyString);
+            pribw.write(privateKeyString);
+            pubbw.flush();
+            pubbw.close();
+            pubfw.close();
+            pribw.flush();
+            pribw.close();
+            prifw.close();
+        } catch (Exception e) {
+            System.out.println("write key to file failed!!");
+            e.printStackTrace();
+        }
+    }
 
     public  static  void witeKeyStringToFile(RSAPrivateKey privateKey,RSAPublicKey publicKey,String filePath){
         try {
