@@ -47,5 +47,17 @@ public class ImportTest {
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(20000, response.getBody().getCode().intValue());
         System.out.println(response.getBody().getMsg());
+
+        bodyMap = new LinkedMultiValueMap<>();
+        path = Paths.get(getClass().getClassLoader().getResource("nftdata.xlsx").toURI());
+        bodyMap.add("file", new FileSystemResource(path.toFile()));
+        requestEntity = new HttpEntity<>(bodyMap, headers);
+
+        response = restTemplate.postForEntity(myConfig.getBackendServerUrl() + "/nft/nft/createAll", requestEntity, Result.class);
+
+        assertTrue(response.getBody().isFlag());
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(20000, response.getBody().getCode().intValue());
+        assertEquals("批量添加成功", response.getBody().getMsg());
     }
 }
