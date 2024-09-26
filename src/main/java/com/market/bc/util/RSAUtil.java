@@ -156,7 +156,7 @@ public class RSAUtil {
         Signature signature = Signature.getInstance("SHA1withRSA");
         signature.initSign(privateKey);
         signature.update(data);
-        return encryptBASE64(signature.sign());
+        return RsaKeyUtils.bytes2String(signature.sign());
     }
 
     /**
