@@ -3,6 +3,8 @@ import com.market.bc.configurer.MyConfig;
 import com.market.bc.fisco.FiscoBcosClient;
 import com.market.bc.pojo.User;
 import entity.Result;
+import org.fisco.bcos.sdk.model.TransactionReceipt;
+import org.fisco.bcos.sdk.transaction.model.exception.ContractException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +27,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestApplication.class)
@@ -77,10 +82,17 @@ public class NFTCreateTest {
     }
 
     @Test
-    public void test() {
+    public void test() throws ContractException {
         String nftID = idWorker.nextId() + "";
         System.out.println(nftID);
         myFiscoClient.switchAccount(hexPrivateKey);
-        myFiscoClient.mintSingle(new BigInteger(nftID), userAddress, url, "1,2,3", pubkey);
+        TransactionReceipt re = myFiscoClient.mintSingle(new BigInteger(nftID), userAddress, url, "1,2,3", pubkey);
+        assertNotNull(re.getTransactionHash()); // 验证哈希值正确
+        String publicKey = myFiscoClient.getPublicKey(new BigInteger(nftID));
+        String address = myFiscoClient.getContract().ownerOf(new BigInteger(nftID));
+
+        assertEquals(address, userAddress);
+        assertEquals(publicKey, pubkey);
+        // 验证链上所有权和公钥正确
     }
 }
