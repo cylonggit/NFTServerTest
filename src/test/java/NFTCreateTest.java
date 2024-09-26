@@ -1,6 +1,8 @@
 import com.market.bc.TestApplication;
 import com.market.bc.configurer.MyConfig;
 import com.market.bc.fisco.FiscoBcosClient;
+import com.market.bc.pojo.User;
+import entity.Result;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +17,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import util.IdWorker;
 
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,12 +32,18 @@ public class NFTCreateTest {
     RestTemplate restTemplate = new RestTemplate();
     String userID;
     String url;
+    String userAddress;
+    String pubkey;
+    String hexPrivateKey;
 
     @Autowired
     MyConfig myConfig;
 
     @Autowired
     FiscoBcosClient myFiscoClient;
+
+    @Autowired
+    IdWorker idWorker;
 
     @Before
     public void init() throws URISyntaxException {
@@ -57,11 +67,20 @@ public class NFTCreateTest {
         System.out.println(url);
         // 上传图片
 
-
+        params = new HashMap<>();
+        params.put("userID", userID);
+        ResponseEntity<Result> response0 = restTemplate.getForEntity(myConfig.getBackendServerUrl() + "/user/user?userID={userID}", Result.class, params);
+        userAddress = new User((Map) response0.getBody().getData()).getAccountAddress();
+        pubkey = new User((Map) response0.getBody().getData()).getNftRSAPublicKey();
+        hexPrivateKey = new User((Map) response0.getBody().getData()).getHexPrivateKey();
+        System.out.println(userAddress);
     }
 
     @Test
     public void test() {
-
+        String nftID = idWorker.nextId() + "";
+        System.out.println(nftID);
+        myFiscoClient.switchAccount(hexPrivateKey);
+        myFiscoClient.mintSingle(new BigInteger(nftID), userAddress, url, "1,2,3", pubkey);
     }
 }
